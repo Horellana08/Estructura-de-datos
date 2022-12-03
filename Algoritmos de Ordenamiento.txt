@@ -1,0 +1,151 @@
+# metodo de ordenamiento bubble sort
+def bubbleSort(lista):
+    for i in range(0, len(lista)-1):
+        for j in range(0, len(lista)-i-1):
+            if lista[j] > lista[j+1]:
+                lista[j], lista[j+1] = lista[j+1], lista[j]
+    return lista
+
+def mergeSort(lista):
+    if len(lista) <= 1:
+        return lista
+    else:
+        medio = len(lista) // 2
+        izquierda = []
+
+        for i in range(0, medio):
+            izquierda.append(lista[i])
+
+        derecha = []
+
+        for i in range(medio, len(lista)):
+            derecha.append(lista[i])
+
+        izquierda = mergeSort(izquierda)
+        derecha = mergeSort(derecha)
+
+        if izquierda[medio-1] <= derecha[0]:
+            izquierda += derecha
+            return izquierda
+
+        resultado = merge(izquierda, derecha)
+
+        return resultado
+
+#mecla los datos de las lista y los uno en una nueva lista
+def merge(izquierda, derecha):
+    mezcla = []
+
+    while len(izquierda) > 0 and len(derecha) > 0:
+        if izquierda[0] <= derecha[0]:
+            mezcla.append(izquierda.pop(0))
+        else:
+            mezcla.append(derecha.pop(0))
+
+    if len(izquierda) > 0:
+        mezcla += izquierda
+
+    if len(derecha) > 0:
+        mezcla += derecha
+
+    return mezcla
+
+#Ordenamiento quicksort
+def quickSort(lista, primero, ultimo):
+    if primero >= ultimo:
+        return
+
+    part = particion(lista, primero, ultimo)
+    quickSort(lista, primero, part-1)
+    quickSort(lista, part+1, ultimo)
+
+    return lista
+
+#metodo para particionar o dividir los elementos de la lista
+def particion(lista, primero, ultimo):
+    pivote = lista[primero]
+    izquierda = primero + 1
+    derecha = ultimo
+
+    while True:
+        while izquierda <= derecha and lista[derecha] >= pivote:
+            derecha -= 1
+
+        while izquierda <= derecha and lista[izquierda] <= pivote:
+            izquierda += 1
+
+        if izquierda <= derecha:
+            lista[izquierda], lista[derecha] = lista[derecha], lista[izquierda]
+        else:
+            break
+
+    lista[primero], lista[derecha] = lista[derecha], lista[primero]
+
+    return derecha
+
+# metodo heapSort
+def heapSort(lista):
+    from heapq import heappop, heappush
+
+    heap = []
+
+    for item in lista:
+        heappush(heap, item)
+
+    sort = []
+
+    while heap:
+        sort.append(heappop(heap))
+
+    return sort
+        
+#metodo radixSort
+def radixSort(lista):
+    #obtener el elemento maximo
+    max_element = max(lista)
+
+    lugar = 1
+    while max_element // lugar > 0:
+        contarRadixSort(lista, lugar)
+        lugar *= 10
+
+    return lista
+
+#contar y clasifcar los elementos
+def contarRadixSort(lista, lugar):
+    size = len(lista)
+    entrada = [0] * size
+    conteo = [0] * 10
+
+    for i in range(0, size):
+        index = lista[i] // lugar
+        conteo[index % 10] += 1
+
+    for i in range(1, len(conteo)):
+        conteo[i] += conteo[i - 1]
+
+    i = size -1
+
+    while i >= 0:
+        index = lista[i] // lugar
+        entrada[conteo[index % 10] - 1] = lista[i]
+        conteo[index % 10] -= 1
+        i -= 1
+
+    for i in range(0, size):
+        lista[i] = entrada[i]
+
+
+
+lista = [0, 6, 4, 100, 89, 12, 8, 9, 5, 1]
+listaBubbleSort = bubbleSort(lista)
+listaMergeSort = mergeSort(lista)
+listaQuickSort = quickSort(lista, 0, len(lista)-1)
+listaHeapSort = heapSort(lista)
+listaRadixSort = radixSort(lista)
+
+print("Bubble Sort:",listaBubbleSort)
+print("Merge Sort:",listaMergeSort)
+print("Quick Sort:",listaQuickSort)
+print("Heap Sort:", listaHeapSort)
+print("Radix Sort:", listaRadixSort)
